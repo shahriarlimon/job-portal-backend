@@ -28,7 +28,17 @@ const jobSchema = mongoose.Schema({
         }
     },
     applyInfo: {
-        candidates: [{ id: ObjectId, ref: "User" }]
+        candidates: [{
+            id: {
+                type: ObjectId, ref: "User"
+            },
+            applyDate: { type: Date, default: Date.now() },
+            resumeLink: {
+                type: String,
+                validate: [validator.isURL, "Please provide a valid resume link"]
+            }
+
+        }]
     },
     deadLine: {
         type: Date,

@@ -1,4 +1,5 @@
 const express = require('express');
-const router = express.Router();
-router.use('/api/v1/jobs',)
-module.exports = router;
+const app = express()
+const jobRoutes = require('./Job')
+app.use('/jobs', jobRoutes)
+module.exports = app;
