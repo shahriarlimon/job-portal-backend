@@ -20,20 +20,31 @@ exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) sendError(res, "Email/password is required")
-        const user = await User.find({ email: email })
+        const user = await User.findOne({ email: email })
         console.log(user)
         if (!user) sendError(res, "User not found");
-        const isPasswordMatched = bcrypt.compareSync(password, user[0].password)
+        const isPasswordMatched = bcrypt.compareSync(password, user.password)
         console.log(isPasswordMatched)
-         if (!isPasswordMatched) sendError(res, "Password didn't match")
-         const token = generateToken(user[0]);
-         console.log(token)
-         const { password: pwd, ...others } = user[0].toObject();
-         console.log(pwd)
-         res.status(200).json({ status: "success", token: token, data: others, message: "User logged in successfully" })
+        if (!isPasswordMatched) sendError(res, "Password didn't match")
+        const token = generateToken(user);
+        console.log(token)
+        const { password: pwd, ...others } = user.toObject();
+        console.log(pwd)
+        res.status(200).json({ status: "success", token: token, data: others, message: "User logged in successfully" })
 
     } catch (error) {
         res.status(400).json({ status: "fail", error: " there're some error" })
+
+    }
+}
+
+exports.getMe = async (req, res, next) => {
+    try {
+        const email = req.user?.email;
+        const user = await User.findOne({ email: email })
+        res.status(200).json({ status: 'success', data: user })
+    } catch (error) {
+        res.status(403).json({ status: 'fail', error })
 
     }
 }
