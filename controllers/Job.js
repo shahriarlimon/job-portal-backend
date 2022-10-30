@@ -41,6 +41,15 @@ exports.getJobById = async (req, res) => {
 
     }
 }
+
+exports.applyToJob = async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const appliedJob = await Job.updateOne()
+    } catch (error) {
+        
+    }
+}
 /* exports.createJob = async (req, res, next) => {
     try {
         const data = req.body;
