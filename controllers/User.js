@@ -37,7 +37,24 @@ exports.login = async (req, res, next) => {
 
     }
 }
+exports.getUsers = async (req, res, next) => {
+    try {
+        const users = await User.find({});
+        res.status(200).json({ status: "success", data: users })
+    } catch (error) {
+        res.status(400).json({ status: "fail", error: " there're some error" })
 
+
+    }
+}
+exports.getUserById = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const user = await User.findOne({ _id: id })
+    } catch (error) {
+        res.status(400).json({ status: "fail", error: " there're some error" })
+    }
+}
 exports.getMe = async (req, res, next) => {
     try {
         const email = req.user?.email;
@@ -48,3 +65,4 @@ exports.getMe = async (req, res, next) => {
 
     }
 }
+

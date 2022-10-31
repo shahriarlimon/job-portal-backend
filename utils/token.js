@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken")
 exports.generateToken = (userInfo) => {
     const payload = {
         email: userInfo.email,
-        role: userInfo.role
+        role: userInfo.role,
+        id: userInfo._id
     }
     const token = jwt.sign(payload, process.env.TOKEN_SECRATE, {
         expiresIn: '7days'

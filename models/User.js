@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { ObjectId } = mongoose.Schema.Types;
 const bcrypt = require('bcrypt');
 const userSchema = mongoose.Schema({
     firstName: {
@@ -41,7 +42,11 @@ const userSchema = mongoose.Schema({
         type: String,
         enum: ["candidate", "admin", "hiring manager"],
         default: "candidate"
-    }
+    },
+    appliedJobs: [{
+        type: ObjectId,
+        ref:"Job"
+    }]
 }, {
     timestamps: true
 })
@@ -51,11 +56,11 @@ userSchema.pre("save", async function (next) {
         this.password = await bcrypt.hash(this.password, 10)
         this.confirmPassword = undefined
     }
-   
+
     next()
 })
 userSchema.methods.comparePassword = function (password, hash) {
-    const isPasswordMatched =  bcrypt.compareSync(password, hash)
+    const isPasswordMatched = bcrypt.compareSync(password, hash)
     return isPasswordMatched;
 }
 module.exports = mongoose.model("User", userSchema)

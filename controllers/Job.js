@@ -1,4 +1,5 @@
 const { json } = require("express")
+const { sendError } = require("../helper/error")
 const Job = require("../models/Job")
 
 exports.getJobs = async (req, res, next) => {
@@ -44,18 +45,22 @@ exports.getJobById = async (req, res) => {
 
 exports.applyToJob = async (req, res, next) => {
     try {
-        const {id} = req.params;
-        const appliedJob = await Job.updateOne()
-    } catch (error) {
-        
+        const { id } = req.params;
+        const candidateId = req.user.id
+        console.log(`job id: ${id},candidateId:${candidateId}`)
+/*         const appliedJob = await Job.updateOne({ _id: id }, { $push: { candidates: candidateId } })
+ */    } catch (error) {
+        res.status(401).json({ status: "failed", error: error.message })
     }
 }
-/* exports.createJob = async (req, res, next) => {
+exports.createJob = async (req, res, next) => {
     try {
-        const data = req.body;
-        const result = await Job.create(data);
-        res.status(200).json({ status: "success", result, message: "created successfully" })
+        const hiringManager = req.user.role;
+        if (!hiringManager) sendError(res, "Only hiring manager can create job")
+        const job = await Job.create(req.body)
+        if (!job) sendError(res, "couldn't create job")
+        res.status(200).json({ status: "success", data: job })
     } catch (error) {
-
+        res.status(401).json({ status: "failed", error: "something went wrong" })
     }
-} */
+}
